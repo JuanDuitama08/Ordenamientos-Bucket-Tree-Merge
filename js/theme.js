@@ -191,7 +191,7 @@ $(this).magnificPopup({
 
 // YouTube/Viemo Video & Gmaps
 $('.popup-youtube, .popup-vimeo, .popup-gmaps').each(function() {
-$(this).magnificPopup({
+$(this).magnificPopup({	
         type: 'iframe',
 		mainClass: 'mfp-fade',
 });
