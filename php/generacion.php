@@ -150,13 +150,11 @@
                         }
 
                         if($x == true){
-                            print_r("Entro numeros");
                             $tiempo_inicial = microtime(true);
                             $ordenamiento_Bucketsort-> BucketSort($arreglo);
                             $tiempo_final = microtime(true);
 
                         }elseif($x == false){
-                            print_r("Entro Letras");
                             $tiempo_inicial = microtime(true);
                             $ordenamiento_Bucketsort-> BucketSortL($arreglo);
                             $tiempo_final = microtime(true);                    
