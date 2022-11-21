@@ -17,6 +17,15 @@
     $arreglo_tiemposM;
     $arreglo_iteraciones;
 
+    $cant_elementosB;
+    $sum_tiemposB;
+
+    $cant_elementosM;
+    $sum_tiemposM;
+
+    $cant_elementosT;
+    $sum_tiemposT;
+
     $cantAlgoritmos= 0;
     $algoritmos;
 
@@ -107,10 +116,11 @@
         }  
     }
 
+    $x = true;
     for ($j = 0; $j < $cantAlgoritmos; $j++){
-
         switch ($algoritmos[$j]) { 
             case "Bucket sort":
+                $x = 0;
                 for ($i = 0; $i < $iteraciones; $i++) {
                     if($tipo_cargue=="archivo"){  
                         $arreglo=$leerArchivo->leerArchivo($arreglo_nombres[$i]);
@@ -119,29 +129,50 @@
                         $tiempo_inicial = microtime(true);
                         $ordenamiento_Bucketsort-> BucketSort($arreglo);
                         $tiempo_final = microtime(true);
-                    
-                        $tiempo = $tiempo_final - $tiempo_inicial;
-            
-                        $arreglo_tiempos[$i]=$tiempo;
-                        $arreglo_iteraciones[$i]=$datos_inicio;
-                    }elseif($tipo_cargue=="aleatorios"){
-                        if($tipo_dato=="numerico"){
-                            $arreglo=$generararreglo -> arrayNumerico($datos_inicio);
-                        }elseif($tipo_dato=="letras"){
-                            $arreglo=$generararreglo -> arrayPalabras($datos_inicio);
-                        } 
 
-                        $tiempo_inicial = microtime(true);
-                        $ordenamiento_Bucketsort-> BucketSort($arreglo);
-                        $tiempo_final = microtime(true);
-                        
-                    
+                        foreach ($arreglo as $value) {
+                            $value = $value;
+                            settype($value,"integer");
+                            echo gettype($value), "\n";
+                        }
+
                         $tiempoB = $tiempo_final - $tiempo_inicial;
             
                         $arreglo_tiemposB[$i]=$tiempoB;
                         $arreglo_iteraciones[$i]=$datos_inicio;
+                    }elseif($tipo_cargue=="aleatorios"){
+                        if($tipo_dato=="numerico"){
+                            $arreglo=$generararreglo -> arrayNumerico($datos_inicio);
+                            $x = true;
+                        }elseif($tipo_dato=="letras"){
+                            $arreglo=$generararreglo -> arrayPalabras($datos_inicio);
+                            $x = false;
+                        }
+
+                        if($x == true){
+                            print_r("Entro numeros");
+                            $tiempo_inicial = microtime(true);
+                            $ordenamiento_Bucketsort-> BucketSort($arreglo);
+                            $tiempo_final = microtime(true);
+
+                        }elseif($x == false){
+                            print_r("Entro Letras");
+                            $tiempo_inicial = microtime(true);
+                            $ordenamiento_Bucketsort-> BucketSortL($arreglo);
+                            $tiempo_final = microtime(true);                    
+                        }
+
+                        $tiempoB = $tiempo_final - $tiempo_inicial;                        
+                        $arreglo_tiemposB[$i]=$tiempoB;
+                        $arreglo_iteraciones[$i]=$datos_inicio;
 
                         $datos_inicio = $datos_inicio + $avance_iteracion ;
+
+                        $cant_elementosB = count($arreglo_tiemposB);
+                        $sum_tiemposB = array_sum($arreglo_tiempoSB);
+
+                        $promB = $sum_tiemposB/$cant_elementosB;
+
                     }
                 }
                 break;
@@ -151,13 +182,16 @@
                         $arreglo=$leerArchivo->leerArchivo($arreglo_nombres[$i]);
                         $datos_inicio= count($arreglo);
 
+
+
                         $tiempo_inicial = microtime(true);
-                        $ordenamiento_Bucketsort-> BucketSort($arreglo);
+                        merge_sort($arreglo);
                         $tiempo_final = microtime(true);
+
                     
-                        $tiempo = $tiempo_final - $tiempo_inicial;
+                        $tiempoM = $tiempo_final - $tiempo_inicial;
             
-                        $arreglo_tiempos[$i]=$tiempo;
+                        $arreglo_tiemposM[$i]=$tiempoM;
                         $arreglo_iteraciones[$i]=$datos_inicio;
                     }elseif($tipo_cargue=="aleatorios"){
                         if($tipo_dato=="numerico"){
@@ -178,7 +212,10 @@
 
                         $datos_inicio = $datos_inicio + $avance_iteracion ;
 
-                        
+                        $cant_elementosM = count($arreglo_tiemposM);
+                        $sum_tiemposM = array_sum($arreglo_tiemposM);
+
+                        $promM = $sum_tiemposM/$cant_elementosM;
                     }
                 }
                 break;
@@ -186,8 +223,8 @@
                 for ($i = 0; $i < $iteraciones; $i++) {
                     if($tipo_cargue=="archivo"){  
                         $arreglo=$leerArchivo->leerArchivo($arreglo_nombres[$i]);
-                        $datos_inicio= count($arreglo);
 
+                        $datos_inicio= count($arreglo);
                         $tiempo_inicial = microtime(true);
                         $ordenamiento_TreeSort-> crearArbol($arreglo);
                         $tiempo_final = microtime(true);
@@ -213,12 +250,16 @@
                         $arreglo_iteraciones[$i]=$datos_inicio;
 
                         $datos_inicio = $datos_inicio + $avance_iteracion ;
+
+                        $cant_elementosT = count($arreglo_tiempos);
+                        $sum_tiemposT = array_sum($arreglo_tiempos);
+
+                        $promT = $sum_tiemposT/ $cant_elementosT;
                     }
                 }
                 break;            
-           
             default;
-                echo '<script language="javascript">alert("¡Seleccione un algoritmo!\n");location.href="../index.php";</script>';
+                echo '<script> alert("¡Seleccione un algoritmo!\n");location.href="../index.php";</script>';
             break;
         }
     }
@@ -264,6 +305,8 @@
 <link rel="stylesheet" type="text/css" href="../css/stylesheet.css" />
 <!-- Colors Css -->
 <link id="color-switcher" type="text/css" rel="../stylesheet" href="#" />
+
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
@@ -402,6 +445,8 @@
                 <div>
                     <h4>Line chart</h4>
                         <canvas id="myChart2"></canvas>
+                    <h4>Comparative time chart</h4>
+                        <canvas id="myChart3"></canvas>
                 </div>
             </div>  
             </div>       
@@ -524,7 +569,7 @@
                             <tr>
                                 <td><?php echo($i+1);?></td>
                                 <td><?php echo($arreglo_iteraciones[$i]);?></td>
-                                <td><?php echo($arreglo_tiemposM[$i]);?></td>
+                                <td><?php echo($arreglo_tiempos[$i]);?></td>
                                 <?php
                                     if($tipo_cargue == "archivo"){
                                 ?>
@@ -600,54 +645,54 @@
 <script src="../js/theme.js"></script>
 
 <script>
-        const ejecucionesTree = <?php echo json_encode($arreglo_iteraciones) ?>;
-        const iteracionesTree = <?php echo json_encode($arreglo_tiempos) ?>;
-        const iteracionesBuck= <?php echo json_encode($arreglo_tiemposB) ?>;
-        const iteracionesMerge= <?php echo json_encode($arreglo_tiemposM) ?>;
-        var buck_val = <?php echo json_encode($bucket) ?>;
-        var tree_val = <?php echo json_encode($tree) ?>;
-        var merge_val = <?php echo json_encode($merge) ?>;
+    const ejecucionesTree = <?php echo json_encode($arreglo_iteraciones) ?>;
+    const iteracionesTree = <?php echo json_encode($arreglo_tiempos) ?>;
+    const iteracionesBuck= <?php echo json_encode($arreglo_tiemposB) ?>;
+    const iteracionesMerge= <?php echo json_encode($arreglo_tiemposM) ?>;
+    var buck_val = <?php echo json_encode($bucket) ?>;
+    var tree_val = <?php echo json_encode($tree) ?>;
+    var merge_val = <?php echo json_encode($merge) ?>;
 
-        //validaciones en caso de que no se escoja alguno
-        if(buck_val == 0){
-            document.getElementById("tabla1").style.display = "none";
-            document.getElementById('head1').style.display = 'none';  
-        }
-        if(tree_val == 0){
-            document.getElementById("tabla3").style.display = "none";
-            document.getElementById('head3').style.display = 'none';  
-        }
-        if(merge_val == 0){
-            document.getElementById('tabla2').style.display = 'none';                                           
-            document.getElementById('head2').style.display = 'none';                                           
-        }
-        
+    //validaciones en caso de que no se escoja alguno
+    if(buck_val == 0){
+        document.getElementById("tabla1").style.display = "none";
+        document.getElementById('head1').style.display = 'none';  
+    }
+    if(tree_val == 0){
+        document.getElementById("tabla3").style.display = "none";
+        document.getElementById('head3').style.display = 'none';  
+    }
+    if(merge_val == 0){
+        document.getElementById('tabla2').style.display = 'none';                                           
+        document.getElementById('head2').style.display = 'none';                                           
+    }
+    
 
-        var ctx1 = document.getElementById('myChart2').getContext('2d');
-        var chart = new Chart(ctx1, {
-            type: 'line',
-            data: {
-                labels: ejecucionesTree,
-                datasets: [{
-                    label: 'Tree sort',
-                    backgroundColor: '#42a5f5',
-                    borderColor: 'gray',
-                    data: iteracionesTree,
-                },{
-                    label: 'Bucket sort',
-                    backgroundColor: '#ffab91',
-                    borderColor: 'yellow',
-                    data: iteracionesBuck,
-                },
-                {
-                    label: 'Merge sort',
-                    backgroundColor: '#82bb00',
-                    borderColor: 'green',
-                    data: iteracionesMerge,
-                }	
-                ]},
-            options: {}
-        });
+    var ctx1 = document.getElementById('myChart2').getContext('2d');
+    var chart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ejecucionesTree,
+            datasets: [{
+                label: 'Tree sort',
+                backgroundColor: '#42a5f5',
+                borderColor: 'gray',
+                data: iteracionesTree,
+            },{
+                label: 'Bucket sort',
+                backgroundColor: '#ffab91',
+                borderColor: 'yellow',
+                data: iteracionesBuck,
+            },
+            {
+                label: 'Merge sort',
+                backgroundColor: '#82bb00',
+                borderColor: 'green',
+                data: iteracionesMerge,
+            }	
+            ]},
+        options: {}
+    });
     </script>
 
     <script>
@@ -667,6 +712,137 @@
                 }
             },
             };
+    </script>
+    <script>
+        // <block:actions:2>
+        const actions = [
+        {
+            name: 'Randomize',
+            handler(chart) {
+            chart.data.datasets.forEach(dataset => {
+                dataset.data = Utils.numbers({count: chart.data.labels.length, min: -100, max: 100});
+            });
+            chart.update();
+            }
+        },
+        {
+            name: 'Add Dataset',
+            handler(chart) {
+            const data = chart.data;
+            const dsColor = Utils.namedColor(chart.data.datasets.length);
+            const newDataset = {
+                label: 'Dataset ' + (data.datasets.length + 1),
+                backgroundColor: Utils.transparentize(dsColor, 0.5),
+                borderColor: dsColor,
+                borderWidth: 1,
+                data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
+            };
+            chart.data.datasets.push(newDataset);
+            chart.update();
+            }
+        },
+        {
+            name: 'Add Data',
+            handler(chart) {
+            const data = chart.data;
+            if (data.datasets.length > 0) {
+                data.labels = Utils.months({count: data.labels.length + 1});
+
+                for (let index = 0; index < data.datasets.length; ++index) {
+                data.datasets[index].data.push(Utils.rand(-100, 100));
+                }
+
+                chart.update();
+            }
+            }
+        },
+        {
+            name: 'Remove Dataset',
+            handler(chart) {
+            chart.data.datasets.pop();
+            chart.update();
+            }
+        },
+        {
+            name: 'Remove Data',
+            handler(chart) {
+            chart.data.labels.splice(-1, 1); // remove the label first
+
+            chart.data.datasets.forEach(dataset => {
+                dataset.data.pop();
+            });
+
+            chart.update();
+            }
+        }
+        ];
+        // </block:actions>
+
+        // <block:setup:1>
+        const DATA_COUNT = 7;
+        const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+        const labels = Utils.months({count: 7});
+        const data = {
+        labels: labels,
+        datasets: [
+            {
+            label: 'Dataset 1',
+            data: Utils.numbers(NUMBER_CFG),
+            borderColor: Utils.CHART_COLORS.red,
+            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+            },
+            {
+            label: 'Dataset 2',
+            data: Utils.numbers(NUMBER_CFG),
+            borderColor: Utils.CHART_COLORS.blue,
+            backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+            }
+        ]
+        };
+        // </block:setup>
+
+        // <block:config:0>
+        const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            indexAxis: 'y',
+            // Elements options apply to all of the options unless overridden in a dataset
+            // In this case, we are setting the border of each horizontal bar to be 2px wide
+            elements: {
+            bar: {
+                borderWidth: 2,
+            }
+            },
+            responsive: true,
+            plugins: {
+            legend: {
+                position: 'right',
+            },
+            title: {
+                display: true,
+                text: 'Chart.js Horizontal Bar Chart'
+            }
+            }
+        },
+        };
+        // </block:config>
+
+        module.exports = {
+        actions: actions,
+        config: config,
+        };
+    </script>
+
+    <script>
+        const config2 = {
+        type: 'bar',
+        data,
+        options: {
+            indexAxis: 'y',
+        }
+        };
     </script>
 <script> 
     $(window).load(function() {

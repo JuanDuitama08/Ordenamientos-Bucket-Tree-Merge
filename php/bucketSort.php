@@ -6,6 +6,7 @@ class implementacionB{
         $maxValue = $data[0];
         $dataLength = count($data);
 
+
         for ($i = 1; $i < $dataLength; $i++)
         {
             if ($data[$i] > $maxValue)
@@ -16,6 +17,7 @@ class implementacionB{
 
         $bucket = array();
         $bucketLength = $maxValue - $minValue + 1;
+
         
         for ($i = 0; $i < $bucketLength; $i++)
         {
@@ -41,7 +43,10 @@ class implementacionB{
                 }
             }
         }
-    } 
+    }
+    function BucketSortL(&$data){
+        sort($data);
+    }
 }
 
 ?>
